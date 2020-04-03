@@ -1,0 +1,13 @@
+name: dog-bark
+dependencies:
+  - python=3.6
+  - pip
+  - pandas
+  - pip:
+    - Pillow
+#    - tensorflow==1.14.0 # CPU support
+    - tensorflow-gpu==1.14.0
+    - keras
+    - matplotlib
+    - numpy
+    - librosa

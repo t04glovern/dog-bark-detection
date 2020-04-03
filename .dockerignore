@@ -1,0 +1,6 @@
+.vscode
+__pycache__
+Dockerfile
+.dockerignore
+.ipynb_checkpoints
+notebooks
