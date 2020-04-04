@@ -1,5 +1,7 @@
 # Dog Bark Detection
 
+![Architecture Diagram](assets/bark-detector.png)
+
 ## Conda Environment
 
 ```bash
