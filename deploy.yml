@@ -12,7 +12,7 @@ data:
   AWS_ACCESS_KEY_ID: xxxxxxxxxxxxxxxxxxxx
   AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   AWS_DEFAULT_REGION: ap-southeast-2
-  PYTHONUNBUFFERED: 1
+  PYTHONUNBUFFERED: "1"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -68,5 +68,5 @@ spec:
               name: bark-detector-config
         resources:
           requests:
-            memory: 4.5Gi
-            cpu: 1000m
+            memory: 1.5Gi
+            cpu: 250m

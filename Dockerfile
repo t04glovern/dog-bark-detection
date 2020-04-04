@@ -1,6 +1,6 @@
 FROM tensorflow/tensorflow:1.14.0-gpu-py3
 
-RUN apt-get update && apt-get install libsndfile1 -y
+RUN apt-get update && apt-get install ffmpeg libsndfile1 -y
 
 COPY . /app
 WORKDIR /app

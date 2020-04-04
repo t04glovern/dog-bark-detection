@@ -30,13 +30,15 @@ def process(event, context):
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     bucket_key = event['Records'][0]['s3']['object']['key']
 
-    file_name_no_ext = bucket_key.rsplit('.', 1)[0]
-    camera_name = file_name_no_ext[0:8]
+    file_name_split = bucket_key.rsplit('/')
+    file_name = file_name_split[2]
+    file_name_no_ext = file_name.rsplit('.')[0]
+    camera_name = file_name_split[0]
     file_unix_timestamp = file_name_no_ext[-10:]
     segment_time = '5'
 
     custom_path = '{}.{}.{}'.format(camera_name, file_unix_timestamp, segment_time)
-    video_path = '/tmp/{}{}'.format(file_unix_timestamp, bucket_key)
+    video_path = '/tmp/{}'.format(file_name)
     audio_path = '/tmp/{}'.format(custom_path)
 
     # Create the tmp directory
@@ -52,29 +54,33 @@ def process(event, context):
     try:
         # Convert video into audio segments of 5 seconds
         os.system('/opt/ffmpeg/ffmpeg -i {} -f segment -segment_time {} -c copy {}/%d.wav'.format(video_path, segment_time, audio_path))
+        os.system('rm {}'.format(video_path))
     except Exception as e:
         print('Error converting video {} : {}'.format(video_path, e))
         raise e
 
     try:
         # Write fragments to S3
-        num_items = upload_objects(audio_path, bucket_name, custom_path)
+        processed_path = 'processed/{}'.format(custom_path)
+        num_items = upload_objects(audio_path, bucket_name, processed_path)
+        os.system('rm -rf {}'.format(audio_path))
     except Exception as e:
         print('Error uploading to s3 {} : {}'.format(audio_path, e))
         raise e
 
-    try:
-        # Delete initial video file
-        s3_client.delete_object(Bucket=bucket_name, Key=bucket_key)
-    except Exception as e:
-        print('Error deleting from s3://{}/{} : {}'.format(bucket_name, bucket_key, e))
-        raise e
+    # try:
+    #     # Delete initial video file
+    #     s3_client.delete_object(Bucket=bucket_name, Key=bucket_key)
+    # except Exception as e:
+    #     print('Error deleting from s3://{}/{} : {}'.format(bucket_name, bucket_key, e))
+    #     raise e
 
     try:
         # Construct message
         message = {
+            'camera': camera_name,
             'bucket_name': bucket_name,
-            'bucket_path': custom_path,
+            'bucket_path': processed_path,
             'num_items': num_items,
             'segment_length': segment_time,
             'timestamp': file_unix_timestamp

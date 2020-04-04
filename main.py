@@ -11,7 +11,10 @@ import boto3
 import os
 import time
 
+region = os.environ['AWS_DEFAULT_REGION']
 table_name = os.environ['TABLE_NAME']
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(table_name)
 
 # Label list
 class_lables = [
@@ -83,6 +86,7 @@ def main():
                 try:
                     body = json.loads(message['Body'])
                     print(body)
+                    camera = body['camera']
                     bucket = body['bucket_name']
                     bucket_path = body['bucket_path']
                     num_items = int(body['num_items'])
@@ -100,16 +104,15 @@ def main():
                             wav_file_key = '{}/{}.wav'.format(bucket_path, i)
                             audio_data, sample_rate = download_wav_data(bucket, wav_file_key)
                             prediction = return_prediction(audio_data, sample_rate)
-                            prediction['timestamp'] = str(timestamp + (i * segment_length))
-                            if prediction['class'] == 'dog_bark' and prediction['probabilities']['dog_bark'] > 0.6:
+                            prediction['timestamp'] = timestamp + (i * segment_length)
+                            if prediction['class'] == 'dog_bark' and prediction['probabilities']['dog_bark'] > 0.75:
                                 try:
-                                    # Inserting in DynamoDB
-                                    dynamodb = boto3.resource('dynamodb')
-                                    table = dynamodb.Table(table_name)
                                     table.put_item(
                                         Item={
+                                            'camera': camera,
                                             'timestamp': prediction['timestamp'],
-                                            'probability': format(prediction['probabilities']['dog_bark'], '.32f')
+                                            'probability': format(prediction['probabilities']['dog_bark'], '.32f'),
+                                            'wav_file': 'https://{}.s3-{}.amazonaws.com/{}'.format(bucket, region, wav_file_key)
                                         }
                                     )
                                 except Exception as e:

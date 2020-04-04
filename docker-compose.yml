@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  bark-detector:
+    build: .
+    environment:
+    - QUEUE_NAME=bark-detector
+    - TABLE_NAME=bark-detector
+    - AWS_DEFAULT_REGION=ap-southeast-2
+    - AWS_PROFILE=default
+    - PYTHONUNBUFFERED="1"
+    volumes:
+      - ~/.aws/:/root/.aws:ro

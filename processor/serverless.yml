@@ -53,9 +53,13 @@ resources:
       Properties:
         TableName: ${self:custom.table}
         AttributeDefinitions:
-          - AttributeName: timestamp
+          - AttributeName: camera
             AttributeType: S
-        KeySchema:
           - AttributeName: timestamp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: camera
             KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
