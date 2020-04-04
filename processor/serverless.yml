@@ -13,6 +13,13 @@ provider:
         - s3:GetObject
         - s3:DeleteObject
       Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+    - Effect: Allow
+      Action: 
+        - sqs:GetQueueUrl
+        - sqs:SendMessage
+      Resource: "*"
+  environment:
+    QUEUE_NAME: ${self:custom.queue}
 
 functions:
   process:
@@ -32,3 +39,23 @@ layers:
 
 custom:
   bucket: bark-detector-home-recordings
+  queue: bark-detector
+  table: bark-detector
+
+resources:
+  Resources:
+    BarkDetectorQueue:
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: ${self:custom.queue}
+    BarkDetectorDynamo:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.table}
+        AttributeDefinitions:
+          - AttributeName: timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: timestamp
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

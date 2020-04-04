@@ -2,8 +2,14 @@ import boto3
 import json
 import os
 
+queue_name = os.environ['QUEUE_NAME']
+
 s3_client = boto3.client('s3')
 s3_resource = boto3.resource('s3')
+
+sqs_client = boto3.client('sqs')
+response = sqs_client.get_queue_url(QueueName=queue_name)
+queue_url = response['QueueUrl']
 
 def upload_objects(root_path, bucket_name, out_dir):
     try:
@@ -11,8 +17,11 @@ def upload_objects(root_path, bucket_name, out_dir):
         for path, subdirs, files in os.walk(root_path):
             path = path.replace("\\","/")
             directory_name = out_dir
+            num_items = 0
             for file in files:
+                num_items = num_items + 1
                 s3_bucket.upload_file(os.path.join(path, file), directory_name + '/' + file)
+            return num_items
     except Exception as e:
         raise e
 
@@ -42,14 +51,14 @@ def process(event, context):
 
     try:
         # Convert video into audio segments of 5 seconds
-        os.system('/opt/ffmpeg/ffmpeg -i {} -f segment -segment_time {} -c copy {}/%09d.wav'.format(video_path, segment_time, audio_path))
+        os.system('/opt/ffmpeg/ffmpeg -i {} -f segment -segment_time {} -c copy {}/%d.wav'.format(video_path, segment_time, audio_path))
     except Exception as e:
         print('Error converting video {} : {}'.format(video_path, e))
         raise e
 
     try:
         # Write fragments to S3
-        upload_objects(audio_path, bucket_name, custom_path)
+        num_items = upload_objects(audio_path, bucket_name, custom_path)
     except Exception as e:
         print('Error uploading to s3 {} : {}'.format(audio_path, e))
         raise e
@@ -61,14 +70,20 @@ def process(event, context):
         print('Error deleting from s3://{}/{} : {}'.format(bucket_name, bucket_key, e))
         raise e
 
-    body = {
-        "message": "Your function executed successfully!",
-        "input": event
-    }
-
-    response = {
-        "statusCode": 200,
-        "body": json.dumps(body)
-    }
-
-    return response
+    try:
+        # Construct message
+        message = {
+            'bucket_name': bucket_name,
+            'bucket_path': custom_path,
+            'num_items': num_items,
+            'segment_length': segment_time,
+            'timestamp': file_unix_timestamp
+        }
+        # Enqueue signal to process
+        response = sqs_client.send_message(QueueUrl=queue_url, MessageBody=json.dumps(message))
+        return {
+            'message': response
+        }
+    except Exception as e:
+        print('Error queuing : {}'.format(e))
+        raise e

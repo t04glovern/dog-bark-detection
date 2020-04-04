@@ -10,14 +10,14 @@ conda activate dog-bark
 ### Run Prediction
 
 ```bash
-python3 main.py
+QUEUE_NAME=<queue_name> TABLE_NAME=<table_name> python3 main.py
 ```
 
 ## Docker
 
 ```bash
 docker build -t dog-bark .
-docker run dog-bark
+docker run --env QUEUE_NAME=<queue_name> --env TABLE_NAME=<table_name> dog-bark
 ```
 
 ## Attribution
