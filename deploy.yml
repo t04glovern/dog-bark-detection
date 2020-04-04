@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bark-detector-config
+  namespace: default
+  labels:
+    app: bark-detector
+data:
+  QUEUE_NAME: bark-detector
+  TABLE_NAME: bark-detector
+  AWS_ACCESS_KEY_ID: xxxxxxxxxxxxxxxxxxxx
+  AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  AWS_DEFAULT_REGION: ap-southeast-2
+  PYTHONUNBUFFERED: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bark-detector
+  namespace: default
+  labels:
+    app: bark-detector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bark-detector
+  template:
+    metadata:
+      labels:
+        app: bark-detector
+    spec:
+      containers:
+      - name: bark-detector
+        image: gcr.io/devopstar/bark-detector:latest
+        imagePullPolicy: Always
+        env:
+        - name: QUEUE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: QUEUE_NAME
+              name: bark-detector-config
+        - name: TABLE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: TABLE_NAME
+              name: bark-detector-config
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            configMapKeyRef:
+              key: AWS_ACCESS_KEY_ID
+              name: bark-detector-config
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: AWS_SECRET_ACCESS_KEY
+              name: bark-detector-config
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            configMapKeyRef:
+              key: AWS_DEFAULT_REGION
+              name: bark-detector-config
+        - name: PYTHONUNBUFFERED
+          valueFrom:
+            configMapKeyRef:
+              key: PYTHONUNBUFFERED
+              name: bark-detector-config
+        resources:
+          requests:
+            memory: 4.5Gi
+            cpu: 1000m
