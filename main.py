@@ -2,7 +2,7 @@ from keras.models import load_model
 from keras.utils import to_categorical
 from sklearn.preprocessing import LabelEncoder
 
-from utils import get_messages_from_queue, download_wav_data
+from utils import get_messages_from_queue, download_wav_data, put_bark_metric
 
 import librosa
 import numpy as np
@@ -45,7 +45,7 @@ def extract_feature(audio_data, sample_rate):
         mfccsscaled = np.mean(mfccs.T, axis=0)
 
     except Exception as e:
-        print("Error encountered while parsing file: ", file_name)
+        print('Error encountered while parsing audio data')
         return None, None
 
     return np.array([mfccsscaled])
@@ -97,7 +97,7 @@ def main():
                     print('ERROR: Parsing message')
                     print(e)
                     raise e
-    
+
                 try:
                     for i in range(num_items):
                         try:
@@ -118,6 +118,11 @@ def main():
                                 except Exception as e:
                                     print('ERROR: Inserting in DynamoDB')
                                     print(e)
+                                # Put metric in CloudWatch
+                                put_bark_metric(
+                                    prediction['timestamp'],
+                                    prediction['probabilities']['dog_bark']
+                                )
                         except Exception as e:
                             print('ERROR: Decoding WAV data')
                             print(e)
