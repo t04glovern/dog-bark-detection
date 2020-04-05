@@ -120,8 +120,9 @@ def main():
                                     print(e)
                                 # Put metric in CloudWatch
                                 put_bark_metric(
+                                    camera,
                                     prediction['timestamp'],
-                                    prediction['probabilities']['dog_bark']
+                                    format(prediction['probabilities']['dog_bark'], '.32f')
                                 )
                         except Exception as e:
                             print('ERROR: Decoding WAV data')

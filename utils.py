@@ -62,7 +62,7 @@ def download_wav_data(bucket_name, bucket_key):
             raise e
         return audio_data, sample_rate
 
-def put_bark_metric(timestamp, probability):
+def put_bark_metric(camera, timestamp, probability):
     try:
         cloudwatch_client.put_metric_data(
             MetricData = [
@@ -70,16 +70,16 @@ def put_bark_metric(timestamp, probability):
                     'MetricName': 'Bark',
                     'Dimensions': [
                         {
-                            'Name': 'PROBABILITY',
-                            'Value': probability
+                            'Name': 'DEVICE_ID',
+                            'Value': camera
                         }
                     ],
-                    'Timestamp': datetime.fromtimestamp(timestamp),
+                    'Timestamp': datetime.utcfromtimestamp(timestamp).isoformat(),
                     'Unit': 'None',
-                    'Value': 1
+                    'Value': 1.0
                 },
             ],
-            Namespace='DogBarkDetector'
+            Namespace='DogBarkDetection'
         )
     except Exception as e:
         print('ERROR: Putting metric to CloudWatch')
