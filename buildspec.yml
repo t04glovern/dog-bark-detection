@@ -1,0 +1,22 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - mkdir -p /build-directory
+      - cp -a ${CODEBUILD_SRC_DIR}/. /build-directory
+      - cd /build-directory/app
+      - npm install
+  build:
+    commands:
+      - cd /build-directory/app
+      - npm run build
+      - cd /build-directory/app
+      - aws s3 sync './dist/' s3://$S3_BUCKET --delete --acl public-read
+      - aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DIST_ID --paths "/*"
+  post_build:
+    commands:
+      - cp -a /build-directory/. ${CODEBUILD_SRC_DIR}
+cache:
+  paths:
+    - 'node_modules/**/*'
+    - 'dist/**/*'
