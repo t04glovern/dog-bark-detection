@@ -3,4 +3,4 @@ import cdk = require('@aws-cdk/core');
 import { CdkStack } from '../lib/cdk-stack';
 
 const app = new cdk.App();
-new CdkStack(app, 'devopstar-gatsby-stack');
+new CdkStack(app, 'barks-devopstar-stack');
