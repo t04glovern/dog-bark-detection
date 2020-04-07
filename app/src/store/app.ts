@@ -5,6 +5,12 @@
 
 import Vue from "vue";
 
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import awsconfig from '../aws-exports';
+import { listBarks } from '../graphql/queries';
+
+Amplify.configure(awsconfig);
+
 import {
     VuexModule,
     Module,
@@ -74,8 +80,7 @@ export class AppModule extends VuexModule {
                 latestPhotoDateTime: new Date(),
             },
         ];
-
-        // TODO: Fetch from DynamoDB.
+        
         const detections: IDetection[] = [
             {
                 id: "1",
@@ -94,6 +99,10 @@ export class AppModule extends VuexModule {
                 rating: "inaccurate",
             },
         ];
+
+        // TODO: remap the array into detections
+        const allBarks = await API.graphql(graphqlOperation(listBarks));
+        console.log(allBarks);
 
         this.setCameras({cameras});
         this.setDetections({detections});
