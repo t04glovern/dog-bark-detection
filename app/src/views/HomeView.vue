@@ -29,7 +29,6 @@
                                            :indeterminate="audioBuffering" />
                         <v-btn small icon
                                color="primary"
-                               :disabled="audioBuffering"
                                @click="onPlayStopAudio(item)">
                             <v-icon small>{{ audioPlaying ? "mdi-stop" : "mdi-play" }}</v-icon>
                         </v-btn>
