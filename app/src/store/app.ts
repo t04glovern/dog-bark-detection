@@ -82,7 +82,7 @@ export class AppModule extends VuexModule {
             },
         ];
 
-        const allBarks = await API.graphql(graphqlOperation(listBarks));
+        const allBarks = await API.graphql(graphqlOperation(listBarks, {limit: 500}));
         const detections: IDetection[] = (allBarks as any)
             .data.listBarks.items.map((b: any): IDetection => ({
                 id: `${b.camera}:${b.timestamp}`,
