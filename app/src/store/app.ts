@@ -5,9 +5,10 @@
 
 import Vue from "vue";
 
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import awsconfig from '../aws-exports';
-import { listBarks } from '../graphql/queries';
+import Amplify, { API, graphqlOperation } from "aws-amplify";
+import { listBarks } from "@/graphql/queries";
+
+const awsconfig = require("@/aws-exports").default;
 
 Amplify.configure(awsconfig);
 
@@ -80,29 +81,17 @@ export class AppModule extends VuexModule {
                 latestPhotoDateTime: new Date(),
             },
         ];
-        
-        const detections: IDetection[] = [
-            {
-                id: "1",
-                camera: "Test Cam 01",
-                timestamp: new Date(),
-                certainty: 0.95,
-                audioUrl: "./audio/test1.wav",
-                rating: "accurate",
-            },
-            {
-                id: "2",
-                camera: "Test Cam 02",
-                timestamp: new Date(),
-                certainty: 0.72,
-                audioUrl: "./audio/test2.wav",
-                rating: "inaccurate",
-            },
-        ];
 
-        // TODO: remap the array into detections
         const allBarks = await API.graphql(graphqlOperation(listBarks));
-        console.log(allBarks);
+        const detections: IDetection[] = (allBarks as any)
+            .data.listBarks.items.map((b: any): IDetection => ({
+                id: `${b.camera}:${b.timestamp}`,
+                camera: b.camera,
+                timestamp: new Date(b.timestamp * 1000),
+                certainty: parseFloat(b.probability),
+                audioUrl: b.wav_file,
+                rating: "unknown", // TODO: Include rating in query.
+            }));
 
         this.setCameras({cameras});
         this.setDetections({detections});
