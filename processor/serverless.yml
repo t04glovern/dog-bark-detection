@@ -53,12 +53,12 @@ resources:
       Properties:
         TableName: ${self:custom.table}
         AttributeDefinitions:
-          - AttributeName: camera
+          - AttributeName: deviceId
             AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
         KeySchema:
-          - AttributeName: camera
+          - AttributeName: deviceId
             KeyType: HASH
           - AttributeName: timestamp
             KeyType: RANGE

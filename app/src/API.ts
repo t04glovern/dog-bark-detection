@@ -3,9 +3,10 @@
 //  This file was automatically generated and should not be edited.
 
 export type TableBarksFilterInput = {
-  camera?: TableStringFilterInput | null,
+  deviceId?: TableStringFilterInput | null,
   timestamp?: TableIntFilterInput | null,
   probability?: TableStringFilterInput | null,
+  camera?: TableStringFilterInput | null,
   wav_file?: TableStringFilterInput | null,
 };
 
@@ -35,16 +36,17 @@ export type TableIntFilterInput = {
 };
 
 export type GetBarksQueryVariables = {
-  camera: string,
+  deviceId: string,
   timestamp: number,
 };
 
 export type GetBarksQuery = {
   getBarks:  {
     __typename: "Barks",
-    camera: string,
+    deviceId: string,
     timestamp: number,
     probability: string,
+    camera: string,
     wav_file: string,
   } | null,
 };
@@ -60,11 +62,69 @@ export type ListBarksQuery = {
     __typename: "BarksConnection",
     items:  Array< {
       __typename: "Barks",
-      camera: string,
+      deviceId: string,
       timestamp: number,
       probability: string,
+      camera: string,
       wav_file: string,
     } | null > | null,
     nextToken: string | null,
+  } | null,
+};
+
+export type OnCreateBarksSubscriptionVariables = {
+  deviceId?: string | null,
+  timestamp?: number | null,
+  probability?: string | null,
+  camera?: string | null,
+  wav_file?: string | null,
+};
+
+export type OnCreateBarksSubscription = {
+  onCreateBarks:  {
+    __typename: "Barks",
+    deviceId: string,
+    timestamp: number,
+    probability: string,
+    camera: string,
+    wav_file: string,
+  } | null,
+};
+
+export type OnUpdateBarksSubscriptionVariables = {
+  deviceId?: string | null,
+  timestamp?: number | null,
+  probability?: string | null,
+  camera?: string | null,
+  wav_file?: string | null,
+};
+
+export type OnUpdateBarksSubscription = {
+  onUpdateBarks:  {
+    __typename: "Barks",
+    deviceId: string,
+    timestamp: number,
+    probability: string,
+    camera: string,
+    wav_file: string,
+  } | null,
+};
+
+export type OnDeleteBarksSubscriptionVariables = {
+  deviceId?: string | null,
+  timestamp?: number | null,
+  probability?: string | null,
+  camera?: string | null,
+  wav_file?: string | null,
+};
+
+export type OnDeleteBarksSubscription = {
+  onDeleteBarks:  {
+    __typename: "Barks",
+    deviceId: string,
+    timestamp: number,
+    probability: string,
+    camera: string,
+    wav_file: string,
   } | null,
 };

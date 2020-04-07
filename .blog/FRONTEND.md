@@ -14,5 +14,5 @@ amplify init
 # ? Build Command:  npm run-script build
 # ? Start Command: npm run-script serve
 
-amplify add codegen --apiId zmjoiuclvfejvkcmkwkpwmfosq
+amplify add codegen --apiId coqczpqf7ffitelz5urwidobpa
 ```

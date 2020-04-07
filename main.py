@@ -10,6 +10,7 @@ import json
 import boto3
 import os
 import time
+import uuid
 
 region = os.environ['AWS_DEFAULT_REGION']
 table_name = os.environ['TABLE_NAME']
@@ -109,6 +110,7 @@ def main():
                                 try:
                                     table.put_item(
                                         Item={
+                                            'deviceId': str(uuid.uuid1()),
                                             'camera': camera,
                                             'timestamp': prediction['timestamp'],
                                             'probability': format(prediction['probabilities']['dog_bark'], '.32f'),

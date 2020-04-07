@@ -20,7 +20,7 @@ def upload_objects(root_path, bucket_name, out_dir):
             num_items = 0
             for file in files:
                 num_items = num_items + 1
-                s3_bucket.upload_file(os.path.join(path, file), directory_name + '/' + file)
+                s3_bucket.upload_file(os.path.join(path, file), directory_name + '/' + file, ExtraArgs={'ContentType': 'audio/wav'})
             return num_items
     except Exception as e:
         raise e
@@ -53,7 +53,7 @@ def process(event, context):
 
     try:
         # Convert video into audio segments of 5 seconds
-        os.system('/opt/ffmpeg/ffmpeg -i {} -f segment -segment_time {} -c copy {}/%d.wav'.format(video_path, segment_time, audio_path))
+        os.system('/opt/ffmpeg/ffmpeg -i {} -f segment -segment_time {} {}/%d.wav'.format(video_path, segment_time, audio_path))
         os.system('rm {}'.format(video_path))
     except Exception as e:
         print('Error converting video {} : {}'.format(video_path, e))

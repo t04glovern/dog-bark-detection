@@ -3,11 +3,12 @@
 // this is an auto generated file. This will be overwritten
 
 export const getBarks = /* GraphQL */ `
-  query GetBarks($camera: String!, $timestamp: Int!) {
-    getBarks(camera: $camera, timestamp: $timestamp) {
-      camera
+  query GetBarks($deviceId: String!, $timestamp: Int!) {
+    getBarks(deviceId: $deviceId, timestamp: $timestamp) {
+      deviceId
       timestamp
       probability
+      camera
       wav_file
     }
   }
@@ -20,9 +21,10 @@ export const listBarks = /* GraphQL */ `
   ) {
     listBarks(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-        camera
+        deviceId
         timestamp
         probability
+        camera
         wav_file
       }
       nextToken
