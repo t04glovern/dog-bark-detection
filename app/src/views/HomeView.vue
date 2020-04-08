@@ -7,6 +7,7 @@
 <template>
     <v-container>
         <v-data-table sort-by="timestamp"
+                      sort-desc
                       :loading="loading"
                       :headers="headers"
                       :items="detections">
