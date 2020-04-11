@@ -2,3 +2,5 @@
 .vscode
 __pycache__
 *.pyc
+model/UrbanSound8K.tar.gz
+model/UrbanSound8K
