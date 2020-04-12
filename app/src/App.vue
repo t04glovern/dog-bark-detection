@@ -34,6 +34,17 @@
 
                     <v-list-item link exact
                                  color="primary"
+                                 :to="{ name: 'DashboardView' }">
+                        <v-list-item-icon>
+                            <v-icon color="primary">mdi-monitor-dashboard</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Dashboard</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link exact
+                                 color="primary"
                                  :to="{ name: 'CameraView' }">
                         <v-list-item-icon>
                             <v-icon color="primary">mdi-cctv</v-icon>
@@ -81,7 +92,9 @@
         </v-navigation-drawer>
 
         <v-content>
-            <router-view />
+            <keep-alive>
+                <router-view />
+            </keep-alive>
         </v-content>
     </v-app>
 </template>
