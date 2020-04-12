@@ -95,12 +95,14 @@
                 align: "start",
                 sortable: true,
                 value: "timestamp",
+                sort: (lhs: Date, rhs: Date) => lhs.getTime() - rhs.getTime(),
             },
             {
                 text: "Certainty",
                 align: "right",
                 sortable: true,
                 value: "certainty",
+                sort: (lhs: number, rhs: number) => lhs - rhs,
             },
             {
                 text: "Audio",
