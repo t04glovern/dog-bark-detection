@@ -6,3 +6,4 @@ Dockerfile
 processor
 model/UrbanSound8K.tar.gz
 model/UrbanSound8K
+cdk

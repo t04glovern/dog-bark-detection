@@ -7,7 +7,7 @@ import librosa
 queue_name = os.environ['QUEUE_NAME']
 
 # SQS Client
-sqs_client = boto3.client('sqs')
+sqs_client = boto3.client('sqs', region_name=os.environ['AWS_DEFAULT_REGION'])
 response = sqs_client.get_queue_url(QueueName=queue_name)
 queue_url = response['QueueUrl']
 

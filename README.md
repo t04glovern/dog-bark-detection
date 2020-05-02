@@ -22,6 +22,20 @@ docker build -t dog-bark .
 docker run --env QUEUE_NAME=<queue_name> --env TABLE_NAME=<table_name> dog-bark
 ```
 
+### ECS
+
+```bash
+# Login
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.ap-southeast-2.amazonaws.com/dog-bark-detection
+
+# Build
+docker build -t dog-bark-detection .
+docker tag dog-bark-detection:latest \
+    123456789012.dkr.ecr.ap-southeast-2.amazonaws.com/dog-bark-detection:latest
+# Push
+docker push 123456789012.dkr.ecr.ap-southeast-2.amazonaws.com/dog-bark-detection:latest
+```
+
 ### Kubernetes
 
 ```bash
