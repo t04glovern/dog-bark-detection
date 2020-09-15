@@ -77,9 +77,10 @@ def return_prediction(audio_data, sample_rate):
 
 def main():
     while True:
-        time.sleep(5)
+        time.sleep(30)
         messages = get_messages_from_queue()
-        print('[INFO] Retrieved ' + str(len(messages)) + ' messages')
+        if len(messages) > 0:
+            print('[INFO] Retrieved ' + str(len(messages)) + ' messages')
 
         # Process each message
         for message in messages:
