@@ -4,3 +4,4 @@ __pycache__
 *.pyc
 model/UrbanSound8K.tar.gz
 model/UrbanSound8K
+UrbanSound8K.tar.gz
