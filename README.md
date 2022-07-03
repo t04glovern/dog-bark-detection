@@ -9,6 +9,12 @@ conda env create -f environment.yml
 conda activate dog-bark
 ```
 
+## Basic Exploration
+If you're just looking to play around with the ML model without worrying
+about the AWS cloud components I'd strongly suggest looking at 
+[notebook.ipyn](notebook.ipynb) after running the conda commands.
+It's set up to train the model from scratch and run inference over `.wav` files.
+
 ### Run Prediction
 
 ```bash
